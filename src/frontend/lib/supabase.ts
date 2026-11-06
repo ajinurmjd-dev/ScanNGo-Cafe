@@ -1,45 +1,63 @@
-// Mock Supabase client when env vars not configured
-// Prevents build errors during static generation
+import { createClient } from "@supabase/supabase-js";
 
-const mockFrom = (table: string) => ({
-  select: () => mockFrom(table),
-  insert: (data: any) => ({
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+// Mock client implementation for when environment variables are not configured
+const createMockClient = () => {
+  const mockFrom = (table: string) => ({
     select: () => ({
-      single: () => Promise.resolve({ data: { id: "mock-id" }, error: null })
+      from: () => ({
+        select: () => ({
+          single: () => Promise.resolve({ data: null, error: null })
+        }),
+        eq: () => ({
+          single: () => Promise.resolve({ data: null, error: null })
+        }),
+        order: () => ({
+          execute: () => Promise.resolve({ data: [], error: null })
+        })
+      }),
+      eq: () => ({
+        single: () => Promise.resolve({ data: null, error: null })
+      })
     }),
-    single: () => Promise.resolve({ data: { id: "mock-id" }, error: null })
-  }),
-  eq: (field: string, value: any) => ({
-    single: () => Promise.resolve({ data: value ? { id: "mock-id", table_number: value } : null, error: value ? null : { message: "Not found" } })
-  }),
-  order: (field: string) => ({
-    execute: () => Promise.resolve({ data: [], error: null })
-  })
-});
+    insert: () => ({
+      select: () => ({
+        single: () => Promise.resolve({ data: null, error: null })
+      }),
+      single: () => Promise.resolve({ data: null, error: null })
+    })
+  });
 
-const mockClient = {
-  from: (table: string) => mockFrom(table),
-  auth: {
-    getUser: () => Promise.resolve({ data: { user: null }, error: null })
-  }
+  return {
+
+    from: (table: string) => mockFrom(table),
+    auth: {
+      getUser: () => Promise.resolve({ data: { user: null }, error: null })
+    }
+  };
 };
 
-let supabase: any = null;
+let supabaseClient: any;
 
-function getSupabase() {
-  if (supabase) return supabase;
-  
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
-  if (url && key && url.startsWith("http")) {
-    const { createClient } = require("@supabase/supabase-js");
-    supabase = createClient(url, key);
+const initSupabase = () => {
+  if (typeof window !== 'undefined') {
+    // For client-side, use the real client
+    if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
+      supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    } else {
+      // Use mock client for development when env vars not configured
+      supabaseClient = createMockClient();
+    }
   } else {
-    supabase = mockClient;
+    // For server-side during build, use mock client
+    supabaseClient = createMockClient();
   }
-  return supabase;
-}
+  return supabaseClient;
+};
 
-export { getSupabase };
-export default getSupabase;
+// Initialize the supabase client
+supabaseClient = initSupabase();
+
+export const supabase = supabaseClient;

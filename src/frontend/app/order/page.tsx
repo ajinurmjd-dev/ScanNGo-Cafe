@@ -2,9 +2,7 @@
 
 import { useState, useEffect, Suspense, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { getSupabase } from "@/lib/supabase";
-
-const supabase = getSupabase();
+import { supabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
