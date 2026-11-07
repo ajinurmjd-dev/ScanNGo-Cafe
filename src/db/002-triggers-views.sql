@@ -21,7 +21,7 @@ BEGIN
             -- Generate random 6-char alphanumeric code
             UPPER(SUBSTR(MD5(RANDOM()::TEXT || CURRENT_TIMESTAMP::TEXT), 1, 6)),
             120,
-            NOW() + INTERVAL '120 minutes'
+            (NOW() AT TIME ZONE 'UTC') + INTERVAL '120 minutes'
         );
     END IF;
     RETURN NEW;
@@ -141,7 +141,7 @@ CREATE VIEW kitchen_queue AS
 SELECT 
     o.id,
     t.table_number,
-    o.created_at AS order_time,
+    o.created_at,
     ROUND(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - o.created_at))/60)::INT AS wait_minutes,
     STRING_AGG(
         mi.name || ' x' || oi.quantity || 
