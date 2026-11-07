@@ -3,9 +3,6 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-
-export const dynamic = 'force-dynamic';
-
 import type { Database } from '@/types/database';
 
 type Category = 'COFFEE' | 'NON_COFFEE' | 'FOOD' | 'DESSERT';

@@ -199,6 +199,8 @@ export default function POSPage() {
         return;
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       // Fetch latest voucher for this order (created by trigger)
       const { data: vouchers, error: voucherError } = await supabase!
         .from('wifi_vouchers')
@@ -270,7 +272,7 @@ export default function POSPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="top- Matplotlib>0 sticky z-10 bg-white shadow-sm">
+      <header className="sticky top-0 z-10 bg-white shadow-sm">
         <div className="mx-auto max-w-md p-4">
           <h1 className="text-2xl font-bold text-gray-900">🏪 Kasir ScanNGo Cafe</h1>
           <p className="text-sm text-gray-600">Manajemen Antrean Realtime</p>

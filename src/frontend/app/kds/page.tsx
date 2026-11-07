@@ -4,12 +4,11 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import type { OrderStatus } from '@/lib/types';
-import type { Database } from '@/types/database';
 
 interface KitchenQueueItem {
   id: string;
   table_number: number;
-  order_time: string;
+  created_at: string;
   wait_minutes: number;
   items_list: string;
   status: OrderStatus;
@@ -33,7 +32,7 @@ export default function KDSPage() {
           .from('kitchen_queue')
           .select('*')
           .order('status', { ascending: true })
-          .order('order_time', { ascending: true });
+          .order('created_at', { ascending: true });
 
         if (error) {
           console.error('Error fetching kitchen queue:', error);
@@ -176,7 +175,7 @@ export default function KDSPage() {
                       <div className="mt-1 flex items-center gap-2">
                         <span className="text-sm text-gray-500">⏳ {order.wait_minutes} menit</span>
                         <span className="text-xs text-gray-400">
-                          • {formatTime(order.order_time)}
+                          • {formatTime(order.created_at)}
                         </span>
                       </div>
                     </div>
