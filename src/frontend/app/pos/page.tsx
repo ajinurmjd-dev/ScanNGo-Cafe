@@ -396,7 +396,7 @@ export default function POSPage() {
                 Batal
               </button>
               <button
-                onClick={confirmPayment}
+                onClick={() => { confirmPayment(); }}
                 className="flex-1 rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white transition-colors hover:bg-emerald-700 disabled:bg-gray-400"
                 disabled={isUpdating}
               >
