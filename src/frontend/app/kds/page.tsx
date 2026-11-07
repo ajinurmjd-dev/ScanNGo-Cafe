@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import type { OrderStatus } from "@/lib/types";
 import type { Database } from "@/types/database";
-
-type OrderStatus = 'PENDING' | 'PAID' | 'BREWING' | 'READY' | 'COMPLETED';
 
 interface KitchenQueueItem {
   id: string;
@@ -16,6 +16,10 @@ interface KitchenQueueItem {
 }
 
 export default function KDSPage() {
+  if (!supabase) {
+    throw new Error('Supabase env vars missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  }
+
   const [queue, setQueue] = useState<KitchenQueueItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,19 +51,11 @@ export default function KDSPage() {
     // Set up realtime subscription for PAID and BREWING orders
     const channel = supabase!
       .channel("kds_orders")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "orders",
-          filter: "status=eq.PENDING,status=eq.PAID,status=eq.BREWING,status=eq.READY,status=eq.COMPLETED"
-        },
-        async (payload: any) => {
-          console.log("KDS Realtime update:", payload.eventType, payload.new.id);
-          fetchQueue();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, (payload: any) => {
+        // eslint-disable-next-line no-console
+        console.log("KDS Realtime update:", payload.eventType, payload.new.id);
+        fetchQueue();
+      })
       .subscribe();
 
     return () => {
@@ -79,12 +75,12 @@ export default function KDSPage() {
 
       if (error) {
         console.error("Error updating status:", error);
-        alert(`Gagal update status ke ${newStatus}`);
+        toast.error(`Gagal update status ke ${newStatus}`);
         return;
       }
     } catch (err) {
       console.error("Exception in updateStatus:", err);
-      alert("Terjadi kesalahan");
+      toast.error("Terjadi kesalahan");
     }
   };
 
@@ -101,7 +97,8 @@ export default function KDSPage() {
       PAID: 'border-yellow-400 bg-yellow-50',
       BREWING: 'border-orange-400 bg-orange-50',
       READY: 'border-green-400 bg-green-50',
-      COMPLETED: 'border-gray-300 bg-gray-50 opacity-75'
+      COMPLETED: 'border-gray-300 bg-gray-50 opacity-75',
+      CANCELLED: 'border-red-400 bg-red-50'
     };
     return colors[status];
   };
@@ -112,7 +109,8 @@ export default function KDSPage() {
       PAID: { text: 'PAID', bg: 'bg-yellow-100 text-yellow-800' },
       BREWING: { text: 'BREWING', bg: 'bg-orange-100 text-orange-800' },
       READY: { text: 'READY', bg: 'bg-green-100 text-green-800' },
-      COMPLETED: { text: 'SELESAI', bg: 'bg-gray-200 text-gray-700' }
+      COMPLETED: { text: 'SELESAI', bg: 'bg-gray-200 text-gray-700' },
+      CANCELLED: { text: 'CANCELLED', bg: 'bg-red-100 text-red-800' }
     };
     return badges[status];
   };
@@ -123,7 +121,8 @@ export default function KDSPage() {
       PAID: { label: 'Mulai Buat', next: 'BREWING' },
       BREWING: { label: 'Siap Saji', next: 'READY' },
       READY: { label: 'Selesai Diambil', next: 'COMPLETED' },
-      COMPLETED: { label: 'Selesai', next: 'COMPLETED' }
+      COMPLETED: { label: 'Selesai', next: 'COMPLETED' },
+      CANCELLED: { label: 'Batal', next: 'CANCELLED' }
     };
     return actions[status];
   };
@@ -189,7 +188,7 @@ export default function KDSPage() {
                     </p>
                   </div>
 
-                  {order.status !== 'COMPLETED' && (
+                  {order.status !== 'COMPLETED' && order.status !== 'CANCELLED' && (
                     <button
                       onClick={() => updateStatus(order.id, nextAction.next)}
                       className={`w-full py-3 px-4 rounded-lg font-bold text-lg transition-colors ${
@@ -197,7 +196,7 @@ export default function KDSPage() {
                         order.status === 'BREWING' ? 'bg-green-600 hover:bg-green-700 text-white' :
                         'bg-gray-400 cursor-not-allowed'
                       }`}
-                      disabled={(order.status as string) === 'COMPLETED'}
+                      disabled={(order.status as string) === 'COMPLETED' || (order.status as string) === 'CANCELLED'}
                     >
                       {nextAction.label}
                     </button>

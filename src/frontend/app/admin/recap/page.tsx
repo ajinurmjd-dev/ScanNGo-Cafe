@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import type { Database } from "@/types/database";
 
 interface SalesRecap {
   order_date: string;
@@ -13,6 +12,10 @@ interface SalesRecap {
 }
 
 export default function RecapPage() {
+  if (!supabase) {
+    throw new Error('Supabase env vars missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  }
+
   const [recaps, setRecaps] = useState<SalesRecap[]>([]);
   const [todayStats, setTodayStats] = useState<{
     gross_revenue: number;

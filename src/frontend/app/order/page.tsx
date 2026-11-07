@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense, useMemo, useCallback } from "react";
+import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
@@ -18,6 +18,10 @@ interface CartItem extends MenuItem {
 }
 
 function OrderContent() {
+  if (!supabase) {
+    throw new Error('Supabase env vars missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  }
+
   const searchParams = useSearchParams();
   const tableNumber = searchParams.get("table");
 
@@ -26,7 +30,6 @@ function OrderContent() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<Category | "ALL">("ALL");
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [dbReady, setDbReady] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successOrder, setSuccessOrder] = useState<{
@@ -110,18 +113,6 @@ function OrderContent() {
       }
       return [...prev, { ...item, quantity: 1, notes: "" }];
     });
-  };
-
-  const updateQuantity = (id: string, delta: number) => {
-    setCart((prev) =>
-      prev
-        .map((i) => (i.id === id ? { ...i, quantity: Math.max(0, i.quantity + delta) } : i))
-        .filter((i) => i.quantity > 0)
-    );
-  };
-
-  const updateNotes = (id: string, notes: string) => {
-    setCart((prev) => prev.map((i) => (i.id === id ? { ...i, notes } : i)));
   };
 
   // Hitung total

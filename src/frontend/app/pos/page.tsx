@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import type { Database } from "@/types/database";
 
@@ -17,6 +18,10 @@ interface OrderWithDetails extends Order {
 }
 
 export default function POSPage() {
+  if (!supabase) {
+    throw new Error('Supabase env vars missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  }
+
   const [pendingOrders, setPendingOrders] = useState<OrderWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<OrderWithDetails | null>(null);
@@ -186,7 +191,7 @@ export default function POSPage() {
 
       if (orderError) {
         console.error("Error updating order:", orderError);
-        alert("Gagal mengonfirmasi pembayaran");
+        toast.error("Gagal mengonfirmasi pembayaran");
         setIsUpdating(false);
         return;
       }
@@ -231,7 +236,7 @@ export default function POSPage() {
 
     } catch (err) {
       console.error("Exception in confirmPayment:", err);
-      alert("Terjadi kesalahan saat mengonfirmasi pembayaran");
+      toast.error("Terjadi kesalahan saat mengonfirmasi pembayaran");
     } finally {
       setIsUpdating(false);
     }
