@@ -5,12 +5,14 @@ Next.js App Router + TypeScript + Tailwind CSS + Supabase
 ## Setup
 
 1. Install dependencies:
+
 ```bash
 cd src/frontend
 npm install
 ```
 
 2. Copy environment variables:
+
 ```bash
 cp .env.example .env
 ```
@@ -18,6 +20,7 @@ cp .env.example .env
 3. Update `.env` dengan Supabase credentials dari dashboard.
 
 4. Run development server:
+
 ```bash
 npm run dev
 ```
@@ -39,6 +42,7 @@ src/frontend/
 ## Database Types
 
 Types generated from `src/db/001-create-tables.sql`:
+
 - `tables` - Meja cafe
 - `menu_items` - Daftar menu
 - `orders` - Pesanan pelanggan
