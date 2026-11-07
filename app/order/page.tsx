@@ -21,12 +21,12 @@ const formatRupiah = (amount: number) =>
 
 function CategoryTabs({ active, onChange }: { active: string; onChange: (c: string) => void }) {
   return (
-    <div className="flex overflow-x-auto gap-2 pb-2 no-scrollbar">
+    <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
       {CATEGORIES.map((cat) => (
         <button
           key={cat.id}
           onClick={() => onChange(cat.id)}
-          className={`px-4 py-2 rounded-full whitespace-nowrap transition-colors ${
+          className={`whitespace-nowrap rounded-full px-4 py-2 transition-colors ${
             active === cat.id
               ? 'bg-emerald-600 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -105,9 +105,7 @@ export default function OrderPage() {
     setCart((prev) => {
       const existing = prev.find((c) => c.id === item.id);
       if (existing) {
-        return prev.map((c) =>
-          c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c
-        );
+        return prev.map((c) => (c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c));
       }
       return [...prev, { ...item, quantity: 1, notes: '' }];
     });
@@ -128,9 +126,7 @@ export default function OrderPage() {
   }, []);
 
   const updateNotes = useCallback((itemId: string, notes: string) => {
-    setCart((prev) =>
-      prev.map((c) => (c.id === itemId ? { ...c, notes } : c))
-    );
+    setCart((prev) => prev.map((c) => (c.id === itemId ? { ...c, notes } : c)));
   }, []);
 
   // Total calculation
@@ -183,9 +179,7 @@ export default function OrderPage() {
       notes: item.notes || null,
     }));
 
-    const { error: itemsError } = await supabase
-      .from('order_items')
-      .insert(orderItems);
+    const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
 
     if (itemsError) {
       alert(`Gagal menyimpan item pesanan: ${itemsError.message}`);
@@ -201,8 +195,8 @@ export default function OrderPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-600"></div>
       </div>
     );
   }
@@ -210,13 +204,11 @@ export default function OrderPage() {
   // Error state
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-        <div className="bg-red-100 text-red-700 p-4 rounded-lg max-w-md">
-          {error}
-        </div>
+      <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
+        <div className="max-w-md rounded-lg bg-red-100 p-4 text-red-700">{error}</div>
         <button
           onClick={() => window.location.reload()}
-          className="mt-6 px-6 py-2 bg-emerald-600 text-white rounded-lg"
+          className="mt-6 rounded-lg bg-emerald-600 px-6 py-2 text-white"
         >
           Coba Lagi
         </button>
@@ -228,20 +220,25 @@ export default function OrderPage() {
   if (success && orderId) {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-6 mt-8">
+        <div className="mx-auto mt-8 max-w-md rounded-2xl bg-white p-6 shadow-lg">
           <div className="text-center">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold mb-2">Pesanan Dibuat!</h2>
-            <p className="text-gray-600 mb-4">Order #{orderId.slice(0, 8).toUpperCase()}</p>
+            <h2 className="mb-2 text-2xl font-bold">Pesanan Dibuat!</h2>
+            <p className="mb-4 text-gray-600">Order #{orderId.slice(0, 8).toUpperCase()}</p>
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-4 text-left">
-              <p className="text-sm text-gray-500 mb-2">Pesanan:</p>
+            <div className="mb-4 rounded-lg bg-gray-50 p-4 text-left">
+              <p className="mb-2 text-sm text-gray-500">Pesanan:</p>
               {cart.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm mb-1">
+                <div key={item.id} className="mb-1 flex justify-between text-sm">
                   <span>
                     {item.quantity}x {item.name}
                     {item.notes && <span className="text-gray-400"> ({item.notes})</span>}
@@ -249,24 +246,25 @@ export default function OrderPage() {
                   <span>{formatRupiah(item.price * item.quantity)}</span>
                 </div>
               ))}
-              <div className="border-t pt-2 mt-2 flex justify-between font-bold">
+              <div className="mt-2 flex justify-between border-t pt-2 font-bold">
                 <span>Total:</span>
                 <span>{formatRupiah(totalAmount)}</span>
               </div>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
               <p className="text-sm text-yellow-800">
                 <strong>Status:</strong> Menunggu Pembayaran di Kasir
               </p>
-              <p className="text-sm text-yellow-800 mt-1">
-                Silakan menuju kasir untuk melakukan pembayaran (Tunai/QRIS) dan dapatkan password Wi-Fi Anda.
+              <p className="mt-1 text-sm text-yellow-800">
+                Silakan menuju kasir untuk melakukan pembayaran (Tunai/QRIS) dan dapatkan password
+                Wi-Fi Anda.
               </p>
             </div>
 
             <button
-              onClick={() => window.location.href = '/'}
-              className="w-full py-3 bg-emerald-600 text-white rounded-lg font-medium"
+              onClick={() => (window.location.href = '/')}
+              className="w-full rounded-lg bg-emerald-600 py-3 font-medium text-white"
             >
               Kembali ke Beranda
             </button>
@@ -285,37 +283,38 @@ export default function OrderPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
-      <div className="bg-emerald-600 text-white p-4 sticky top-0 z-10 shadow-md">
-        <div className="max-w-md mx-auto">
+      <div className="sticky top-0 z-10 bg-emerald-600 p-4 text-white shadow-md">
+        <div className="mx-auto max-w-md">
           <h1 className="text-xl font-bold">Menu Meja {tableNumber}</h1>
         </div>
       </div>
 
       {/* Cart summary mobile */}
-      <div className="max-w-md mx-auto p-4">
+      <div className="mx-auto max-w-md p-4">
         {/* Category Tabs */}
         <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
 
         {/* Menu List */}
         <div className="mt-4 space-y-3">
           {filteredMenu.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">Tidak ada menu di kategori ini.</div>
+            <div className="py-8 text-center text-gray-500">Tidak ada menu di kategori ini.</div>
           ) : (
             filteredMenu.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                <div className="flex justify-between items-start">
+              <div
+                key={item.id}
+                className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-semibold text-gray-900">{item.name}</h3>
                     {item.description && (
-                      <p className="text-sm text-gray-500 mt-1">{item.description}</p>
+                      <p className="mt-1 text-sm text-gray-500">{item.description}</p>
                     )}
-                    <p className="text-emerald-600 font-bold mt-2">
-                      {formatRupiah(item.price)}
-                    </p>
+                    <p className="mt-2 font-bold text-emerald-600">{formatRupiah(item.price)}</p>
                   </div>
                   <button
                     onClick={() => addToCart(item)}
-                    className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center hover:bg-emerald-200 transition"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 transition hover:bg-emerald-200"
                   >
                     +
                   </button>
@@ -328,14 +327,19 @@ export default function OrderPage() {
         {/* Cart Items */}
         {cart.length > 0 && (
           <div className="mt-6">
-            <h3 className="font-semibold mb-3">Keranjang ({cart.reduce((s, i) => s + i.quantity, 0)} item)</h3>
+            <h3 className="mb-3 font-semibold">
+              Keranjang ({cart.reduce((s, i) => s + i.quantity, 0)} item)
+            </h3>
             <div className="space-y-3">
               {cart.map((item) => (
-                <div key={item.id} className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                  <div className="flex justify-between items-start">
+                <div
+                  key={item.id}
+                  className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm"
+                >
+                  <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="font-medium">{item.name}</div>
-                      <div className="text-emerald-600 font-semibold mt-1">
+                      <div className="mt-1 font-semibold text-emerald-600">
                         {formatRupiah(item.price * item.quantity)}
                       </div>
                       <input
@@ -343,21 +347,25 @@ export default function OrderPage() {
                         placeholder="Catatan (opsional, misal: kurangi es)"
                         value={item.notes}
                         onChange={(e) => updateNotes(item.id, e.target.value)}
-                        className="w-full mt-2 px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                        className="mt-2 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => item.quantity > 1 ? updateQuantity(item.id, -1) : removeFromCart(item.id)}
-                          className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-700"
+                          onClick={() =>
+                            item.quantity > 1
+                              ? updateQuantity(item.id, -1)
+                              : removeFromCart(item.id)
+                          }
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-700"
                         >
                           -
                         </button>
-                        <span className="font-semibold w-6 text-center">{item.quantity}</span>
+                        <span className="w-6 text-center font-semibold">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.id, 1)}
-                          className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600"
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
                         >
                           +
                         </button>
@@ -377,8 +385,8 @@ export default function OrderPage() {
         )}
 
         {/* Customer Form */}
-        <div className="mt-6 bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="mt-6 rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Nama Pemesan <span className="text-red-500">*</span>
           </label>
           <input
@@ -386,28 +394,30 @@ export default function OrderPage() {
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             placeholder="Masukkan nama Anda"
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
       </div>
 
       {/* Sticky Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-md mx-auto p-4">
-          <div className="flex justify-between items-center mb-3">
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-white shadow-lg">
+        <div className="mx-auto max-w-md p-4">
+          <div className="mb-3 flex items-center justify-between">
             <span className="text-gray-600">Total:</span>
             <span className="text-2xl font-bold text-gray-900">{formatRupiah(totalAmount)}</span>
           </div>
           <button
             onClick={handleSubmit}
             disabled={cart.length === 0 || submitting}
-            className={`w-full py-3 rounded-lg font-semibold text-lg transition ${
+            className={`w-full rounded-lg py-3 text-lg font-semibold transition ${
               cart.length === 0 || submitting
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'cursor-not-allowed bg-gray-300 text-gray-500'
                 : 'bg-emerald-600 text-white hover:bg-emerald-700'
             }`}
           >
-            {submitting ? 'Memproses...' : `Pesan Sekarang (${cart.reduce((s, i) => s + i.quantity, 0)} item)`}
+            {submitting
+              ? 'Memproses...'
+              : `Pesan Sekarang (${cart.reduce((s, i) => s + i.quantity, 0)} item)`}
           </button>
         </div>
       </div>

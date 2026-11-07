@@ -1,6 +1,6 @@
 export default {
   appDir: true,
   compilerOptions: {
-    pathAlias: { "./*": ["./src/*"] },
+    pathAlias: { './*': ['./src/*'] },
   },
-}
+};

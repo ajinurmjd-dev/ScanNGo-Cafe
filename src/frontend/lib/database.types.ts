@@ -1,12 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    "Supabase URL and Anon Key are not set. Please check your .env.local file."
-  );
+  console.warn('Supabase URL and Anon Key are not set. Please check your .env.local file.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -224,10 +222,10 @@ export type Database = {
       };
     };
     Enums: {
-      order_status: "PENDING" | "PAID" | "BREWING" | "READY" | "COMPLETED" | "CANCELLED";
-      table_status: "AVAILABLE" | "OCCUPIED" | "RESERVED";
-      payment_method: "CASH" | "QRIS" | "TRANSFER";
-      menu_category: "COFFEE" | "NON_COFFEE" | "FOOD" | "DESSERT";
+      order_status: 'PENDING' | 'PAID' | 'BREWING' | 'READY' | 'COMPLETED' | 'CANCELLED';
+      table_status: 'AVAILABLE' | 'OCCUPIED' | 'RESERVED';
+      payment_method: 'CASH' | 'QRIS' | 'TRANSFER';
+      menu_category: 'COFFEE' | 'NON_COFFEE' | 'FOOD' | 'DESSERT';
     };
   };
 };

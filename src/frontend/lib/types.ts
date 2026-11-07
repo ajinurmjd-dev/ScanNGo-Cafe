@@ -40,11 +40,11 @@ export interface Order {
   updated_at: string;
 }
 
-export type OrderStatus = 
-  | 'PENDING'   // belum bayar
-  | 'PAID'      // sudah bayar
-  | 'BREWING'   // sedang bikin
-  | 'READY'     // siap diambil
+export type OrderStatus =
+  | 'PENDING' // belum bayar
+  | 'PAID' // sudah bayar
+  | 'BREWING' // sedang bikin
+  | 'READY' // siap diambil
   | 'COMPLETED' // selesai
   | 'CANCELLED';
 

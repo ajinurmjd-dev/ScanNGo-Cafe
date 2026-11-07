@@ -5,21 +5,21 @@ export type Database = {
         Row: {
           id: string;
           table_number: number;
-          status: "AVAILABLE" | "OCCUPIED" | "RESERVED";
+          status: 'AVAILABLE' | 'OCCUPIED' | 'RESERVED';
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
           table_number: number;
-          status?: "AVAILABLE" | "OCCUPIED" | "RESERVED";
+          status?: 'AVAILABLE' | 'OCCUPIED' | 'RESERVED';
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
           table_number?: number;
-          status?: "AVAILABLE" | "OCCUPIED" | "RESERVED";
+          status?: 'AVAILABLE' | 'OCCUPIED' | 'RESERVED';
           created_at?: string;
           updated_at?: string;
         };
@@ -30,7 +30,7 @@ export type Database = {
           name: string;
           description: string | null;
           price: number;
-          category: "COFFEE" | "NON_COFFEE" | "FOOD" | "DESSERT";
+          category: 'COFFEE' | 'NON_COFFEE' | 'FOOD' | 'DESSERT';
           is_available: boolean;
           created_at: string;
           updated_at: string;
@@ -40,7 +40,7 @@ export type Database = {
           name: string;
           description?: string | null;
           price: number;
-          category: "COFFEE" | "NON_COFFEE" | "FOOD" | "DESSERT";
+          category: 'COFFEE' | 'NON_COFFEE' | 'FOOD' | 'DESSERT';
           is_available?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -50,7 +50,7 @@ export type Database = {
           name?: string;
           description?: string | null;
           price?: number;
-          category?: "COFFEE" | "NON_COFFEE" | "FOOD" | "DESSERT";
+          category?: 'COFFEE' | 'NON_COFFEE' | 'FOOD' | 'DESSERT';
           is_available?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -61,9 +61,9 @@ export type Database = {
           id: string;
           table_id: string;
           customer_name: string | null;
-          status: "PENDING" | "PAID" | "BREWING" | "READY" | "COMPLETED" | "CANCELLED";
+          status: 'PENDING' | 'PAID' | 'BREWING' | 'READY' | 'COMPLETED' | 'CANCELLED';
           total_amount: number;
-          payment_method: "CASH" | "QRIS" | "TRANSFER" | null;
+          payment_method: 'CASH' | 'QRIS' | 'TRANSFER' | null;
           notes: string | null;
           created_at: string;
           updated_at: string;
@@ -72,9 +72,9 @@ export type Database = {
           id?: string;
           table_id: string;
           customer_name?: string | null;
-          status?: "PENDING" | "PAID" | "BREWING" | "READY" | "COMPLETED" | "CANCELLED";
+          status?: 'PENDING' | 'PAID' | 'BREWING' | 'READY' | 'COMPLETED' | 'CANCELLED';
           total_amount: number;
-          payment_method?: "CASH" | "QRIS" | "TRANSFER" | null;
+          payment_method?: 'CASH' | 'QRIS' | 'TRANSFER' | null;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -83,9 +83,9 @@ export type Database = {
           id?: string;
           table_id?: string;
           customer_name?: string | null;
-          status?: "PENDING" | "PAID" | "BREWING" | "READY" | "COMPLETED" | "CANCELLED";
+          status?: 'PENDING' | 'PAID' | 'BREWING' | 'READY' | 'COMPLETED' | 'CANCELLED';
           total_amount?: number;
-          payment_method?: "CASH" | "QRIS" | "TRANSFER" | null;
+          payment_method?: 'CASH' | 'QRIS' | 'TRANSFER' | null;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -170,9 +170,9 @@ export type Database = {
       };
     };
     Enums: {
-      table_status: "AVAILABLE" | "OCCUPIED" | "RESERVED";
-      order_status: "PENDING" | "PAID" | "BREWING" | "READY" | "COMPLETED" | "CANCELLED";
-      payment_method: "CASH" | "QRIS" | "TRANSFER";
+      table_status: 'AVAILABLE' | 'OCCUPIED' | 'RESERVED';
+      order_status: 'PENDING' | 'PAID' | 'BREWING' | 'READY' | 'COMPLETED' | 'CANCELLED';
+      payment_method: 'CASH' | 'QRIS' | 'TRANSFER';
     };
   };
 };
